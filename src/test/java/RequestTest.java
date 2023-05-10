@@ -19,6 +19,7 @@ import javax.persistence.Persistence;
 import java.lang.reflect.Type;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @ExtendWith(VertxExtension.class)
 public class RequestTest {
 
@@ -38,6 +39,7 @@ public class RequestTest {
                 .onSuccess(success -> testContext.completeNow())
                 .onFailure(failure -> testContext.failNow(failure));
     }
+
     @Test
     public void testHandleRegisterStudent(Vertx vertx, VertxTestContext testContext) {
 
