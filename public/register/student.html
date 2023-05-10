@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration Form</title>
+</head>
+<body>
+<h1>Student Registration Form</h1>
+<form id="register-form">
+    <label for="id">ID:</label>
+    <input type="text" id="id" name="id"><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password"><br>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name"><br>
+
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" name="phone"><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email"><br>
+
+    <button type="button" onclick="registerStudent()">Register</button>
+</form>
+<script>
+    function registerStudent() {
+        var form = document.getElementById('register-form');
+        var formData = new FormData(form);
+        var jsonObject = {};
+
+        for (const [key, value] of formData.entries()) {
+            jsonObject[key] = value;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/register/student');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(jsonObject));
+    }
+</script>
+</body>
+</html>
