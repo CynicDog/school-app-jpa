@@ -11,6 +11,7 @@ public class ServerDriver extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
+
         HttpServer server = vertx.createHttpServer();
         Router router = Router.router(vertx);
 
