@@ -53,8 +53,7 @@ public class RequestTest {
         vertx.createHttpClient()
                 .request(HttpMethod.POST, 8080, "127.0.0.1", "/register/student")
                 .compose(request -> {
-                    request.putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                            .putHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(payload.toBuffer().length()));
+                    request.putHeader(HttpHeaders.CONTENT_TYPE, "application/json");
                     return request.send(Json.encodeToBuffer(payload));
                 })
                 .compose(response -> response.body())
