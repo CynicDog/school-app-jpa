@@ -3,7 +3,6 @@ package org.jhta.domain;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +10,6 @@ import java.util.Set;
 public class Student extends Person {
 
     private String deleted;
-
     @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
     Set<Registration> registrations = new HashSet<>();
 
@@ -36,5 +34,4 @@ public class Student extends Person {
     public void addRegistration(Registration registration) {
         this.registrations.add(registration);
     }
-
 }
