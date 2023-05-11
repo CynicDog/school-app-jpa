@@ -5,7 +5,7 @@
     <title>School App</title>
 </head>
 <body>
-<h1>Student Registration Form</h1>
+<h1>Teacher Registration Form</h1>
 <form id="register-form">
     <label for="id">ID:</label>
     <input type="text" id="id" name="id"><br>
@@ -22,10 +22,13 @@
     <label for="email">Email:</label>
     <input type="email" id="email" name="email"><br>
 
-    <button type="button" onclick="registerStudent()">Register</button>
+    <label for="salary">Salary:</label>
+    <input type="number" id="salary" name="salary"><br>
+
+    <button type="button" onclick="registerTeacher()">Register</button>
 </form>
 <script>
-    function registerStudent() {
+    function registerTeacher() {
         var form = document.getElementById('register-form');
         var formData = new FormData(form);
         var jsonObject = {};
@@ -35,7 +38,7 @@
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/register/student');
+        xhr.open('POST', '/register/teacher');
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(jsonObject));
     }

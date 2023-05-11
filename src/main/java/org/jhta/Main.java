@@ -104,7 +104,7 @@ public class Main {
                 .forEach(System.out::println);
     }
 
-    private void 강사과정취소() {
+    private void 강사과정취소() { // TODO
         System.out.println("[ Course Close Down Page ]\nFill up required information for closing down a course.\n");
         System.out.println("(Required) Course number: "); int course_no = keyboard.readInt();
     }
@@ -140,11 +140,9 @@ public class Main {
                 .forEach(System.out::println);
     }
 
-    private void 학생등록취소() {
+    private void 학생등록취소() { // TODO
         System.out.println("[ Course Registration Abort Page ]\nFill up required information for aborting registration for a course.");
         System.out.println("(Required) Course registration number: "); int reg_no = keyboard.readInt();
-
-        System.out.println("\nAborting the registration history got successfully done.");
     }
 
     private void 학생과정신청() {
