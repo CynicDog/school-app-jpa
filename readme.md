@@ -1,6 +1,6 @@
 # Specification of `school-app`
 
-### User
+### Users
 - Student 
 - Teacher
 
