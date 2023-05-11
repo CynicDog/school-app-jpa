@@ -82,6 +82,13 @@ public class UserController {
         System.out.println("Login succeeded!");
 
         this.loginUser = new LoginUser(found.getId(), found.getName(), found.getEmail(), type);
+        // TODO:
+        //   In order to properly separate business logic for Student and Teacher,
+        //  the validation of type should be done out of database, not by user-given information.
+        //   To implement this, bottom-up changes are required from the domain `Person` by adding a property
+        //  for discerning the type of user.
+        //   Ultimately, register pages should come up with additional input tag, and the select
+        //  tag in login page should be dropped.
 
         if ("student".equals(loginUser.getType())) {
             System.out.println("Directing to dashboard for student..");

@@ -18,6 +18,8 @@ public class ServerDriver extends AbstractVerticle {
         UserController userController = new UserController();
         userController.registerRoutes(vertx, router);
 
+//        CourseController courseController = new CourseController();
+
         server.requestHandler(router).listen(8080, result -> {
             if (result.succeeded()) {
                 startPromise.complete();
