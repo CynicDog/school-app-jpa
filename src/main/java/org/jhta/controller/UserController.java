@@ -65,11 +65,22 @@ public class UserController {
                     .sendFile("public/dashboard/teacher.html");
         });
 
+        router.route(HttpMethod.GET, "/login-user").handler(this::handleLoginUser);
+
         router.route(HttpMethod.POST, "/register/student").handler(this::handleRegisterStudent);
         router.route(HttpMethod.POST, "/register/teacher").handler(this::handleRegisterTeacher);
         router.route(HttpMethod.POST, "/login")
                 .handler(BodyHandler.create())
                 .handler(this::handleLogin);
+    }
+
+    private void handleLoginUser(RoutingContext routingContext) {
+        JsonObject json = new JsonObject()
+                .put("name", loginUser.getName());
+
+        routingContext.response()
+                .putHeader("Content-Type", "application/json")
+                .end(json.encode());
     }
 
     public void handleLogin(RoutingContext routingContext) {

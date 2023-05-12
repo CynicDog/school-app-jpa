@@ -6,6 +6,7 @@
 </head>
 <body>
     <h1>Student Dashboard</h1>
+    <p>Welcome, <span id="user-name"></span>!</p><br>
     <h2>Available Courses</h2>
     <ul id="available-courses"></ul>
 
@@ -21,6 +22,15 @@
     <ul id="registered-courses"></ul>
 
     <script>
+        fetch('/login-user')
+            .then(response => response.json())
+            .then(user => {
+                document.getElementById('user-name').textContent = user.name;
+            })
+            .catch(error => {
+                console.error('Error fetching login user:', error);
+            });
+
         // send a GET request to get the list of available courses and update the UI
         fetch('/courses')
             .then(response => response.json())
