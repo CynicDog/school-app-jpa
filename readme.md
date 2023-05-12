@@ -1,4 +1,4 @@
-# Specification of `school-app`
+# Specification of `school-app-jpa`
 
 ### Users
 - Student 
