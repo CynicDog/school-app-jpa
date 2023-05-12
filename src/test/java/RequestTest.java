@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(VertxExtension.class)
 public class RequestTest {
 
-    private final Type studentType = new TypeToken<Student>(){}.getType();
     private static EntityManagerFactory emf;
     private static Gson gson;
 
@@ -48,7 +47,8 @@ public class RequestTest {
                 .put("password", "toquinho1")
                 .put("name", "Toquinho")
                 .put("phone", "722-162-9186")
-                .put("email", "toquiho1@school.com");
+                .put("email", "toquiho1@school.com")
+                .put("type", "student");
 
         vertx.createHttpClient()
                 .request(HttpMethod.POST, 8080, "127.0.0.1", "/register/student")

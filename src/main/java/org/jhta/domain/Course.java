@@ -36,14 +36,14 @@ public class Course {
 
     public Course() {
         this.regCount = 0;
-        this.status = "모집중";
+        this.status = "available";
     }
 
     public Course(String name, int quota, Teacher teacher) {
         this.name = name;
         this.quota = quota;
         this.regCount = 0;
-        this.status = "모집중";
+        this.status = "available";
         this.teacher = teacher;
 
         this.teacher.addCourse(this);

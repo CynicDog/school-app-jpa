@@ -25,15 +25,19 @@ public class Person {
     @CreationTimestamp
     private Date createDate;
 
+    @Column(nullable = false)
+    private String type;
+
     public Person() {
     }
 
-    public Person(String id, String password, String name, String phone, String email) {
+    public Person(String id, String password, String name, String phone, String email, String type) {
         this.id = id;
         this.password = password;
         this.name = name;
         this.phone = phone;
         this.email = email;
+        this.type = type;
     }
 
     public String getId() {
@@ -74,6 +78,14 @@ public class Person {
 
     public Date getCreateDate() {
         return createDate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

@@ -1,16 +1,25 @@
 package org.jhta;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.ext.web.Router;
+import org.jhta.controller.CourseController;
 import org.jhta.controller.UserController;
+import org.jhta.domain.LoginUser;
+import org.jhta.util.LoginUserCodec;
 
 public class ServerDriver extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
+
+//        ObjectMapper mapper = DatabindCodec.mapper();
+//        mapper.registerModule(new JavaTimeModule());
 
         HttpServer server = vertx.createHttpServer();
         Router router = Router.router(vertx);
@@ -18,7 +27,8 @@ public class ServerDriver extends AbstractVerticle {
         UserController userController = new UserController();
         userController.registerRoutes(vertx, router);
 
-//        CourseController courseController = new CourseController();
+        CourseController courseController = new CourseController(vertx);
+        courseController.registerRoutes(vertx, router);
 
         server.requestHandler(router).listen(8080, result -> {
             if (result.succeeded()) {
@@ -31,7 +41,9 @@ public class ServerDriver extends AbstractVerticle {
     }
 
     public static void main(String[] args) {
+
         Vertx vertx = Vertx.vertx();
         vertx.deployVerticle(new ServerDriver());
+        vertx.eventBus().registerDefaultCodec(LoginUser.class, new LoginUserCodec());
     }
 }

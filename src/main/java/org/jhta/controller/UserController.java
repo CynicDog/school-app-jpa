@@ -3,6 +3,7 @@ package org.jhta.controller;
 import com.google.gson.Gson;
 import io.vertx.core.Vertx;
 
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -21,11 +22,11 @@ import javax.persistence.Persistence;
 public class UserController {
     private final UserService userService;
     private final Gson gson;
-
     private LoginUser loginUser;
+    public LoginUser getLoginUser() { return loginUser; }
 
     public UserController() {
-        EntityManagerFactory emf =Persistence.createEntityManagerFactory("school-app-jpa");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("school-app-jpa");
         userService = new UserService(emf);
         gson = new Gson();
     }
@@ -76,19 +77,16 @@ public class UserController {
 
         String id = loginData.getString("id");
         String password = loginData.getString("password");
-        String type = loginData.getString("type");
 
         Person found = userService.processLogin(id, password);
         System.out.println("Login succeeded!");
 
-        this.loginUser = new LoginUser(found.getId(), found.getName(), found.getEmail(), type);
-        // TODO:
-        //   In order to properly separate business logic for Student and Teacher,
-        //  the validation of type should be done out of database, not by user-given information.
-        //   To implement this, bottom-up changes are required from the domain `Person` by adding a property
-        //  for discerning the type of user.
-        //   Ultimately, register pages should come up with additional input tag, and the select
-        //  tag in login page should be dropped.
+        this.loginUser = new LoginUser(found.getId(), found.getName(), found.getEmail(), found.getType());
+
+        routingContext.vertx().getOrCreateContext().put("loginUser", this.loginUser);
+
+        EventBus eventBus = routingContext.vertx().eventBus();
+        eventBus.publish("loginUser", this.loginUser);
 
         if ("student".equals(loginUser.getType())) {
             System.out.println("Directing to dashboard for student..");
@@ -104,8 +102,9 @@ public class UserController {
 
             Teacher teacher = gson.fromJson(body.toString(), Teacher.class);
             userService.registerTeacher(teacher);
-
-            routingContext.response().setStatusCode(201).end();
+            System.out.println("Register succeeded!");
+            System.out.println("Directing to log in page...");
+            routingContext.response().setStatusCode(201).putHeader("Location", "/page/login").end();
         });
     }
 
@@ -114,8 +113,9 @@ public class UserController {
 
             Student student = gson.fromJson(body.toString(), Student.class);
             userService.registerStudent(student);
-
-            routingContext.response().setStatusCode(201).end();
+            System.out.println("Register succeeded!");
+            System.out.println("Directing to log in page...");
+            routingContext.response().setStatusCode(201).putHeader("Location", "/page/login").end();
         });
     }
 }

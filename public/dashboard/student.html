@@ -1,10 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>School App</title>
+    <title>Student Dashboard</title>
 </head>
 <body>
-Dashboard for Student
+    <h1>Student Dashboard</h1>
+    <h2>Available Courses</h2>
+    <ul id="available-courses"></ul>
+
+    <br>
+    <h2>Apply for Course</h2>
+    <label for="courseId">Course Id: </label>
+    <input type="number" id="courseId" name="courseId">
+    <button type="button" onclick="applyForCourse()">Apply</button>
+    <div id="result"></div>
+    <br>
+
+    <h2>Registered Courses</h2>
+    <ul id="registered-courses"></ul>
+
+    <script>
+        // send a GET request to get the list of available courses and update the UI
+        fetch('/courses')
+            .then(response => response.json())
+            .then(courses => {
+                const availableCoursesList = document.getElementById('available-courses');
+                courses.forEach(course => {
+                    const li = document.createElement('li');
+
+                    const ul = document.createElement('ul');
+                    const idLi = document.createElement('li');
+                    idLi.textContent = 'ID: ' + course.id;
+                    ul.appendChild(idLi);
+
+                    const nameLi = document.createElement('li');
+                    nameLi.textContent = 'Name: ' + course.name;
+                    ul.appendChild(nameLi);
+
+                    const quotaLi = document.createElement('li');
+                    quotaLi.textContent = 'Quota: ' + course.quota;
+                    ul.appendChild(quotaLi);
+
+                    const regCountLi = document.createElement('li');
+                    regCountLi.textContent = 'Registration Count: ' + course.regCount;
+                    ul.appendChild(regCountLi);
+
+                    const statusLi = document.createElement('li');
+                    statusLi.textContent = 'Status: ' + course.status;
+                    ul.appendChild(statusLi);
+                    ul.appendChild(document.createElement('br'))
+
+                    li.appendChild(ul);
+                    availableCoursesList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching courses:', error);
+            });
+
+        //
+        function applyForCourse() {
+            var courseId = parseInt(document.getElementById('courseId').value);
+            fetch('/apply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    courseId: courseId
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+        // send a GET request to get the list of registered courses and update the UI
+        fetch('/registered-courses')
+            .then(response => response.json())
+            .then(courses => {
+                const registeredCoursesList = document.getElementById('registered-courses');
+                courses.forEach(course => {
+                    const li = document.createElement('li');
+
+                    const ul = document.createElement('ul');
+                    const idLi = document.createElement('li');
+                    idLi.textContent = 'Registration id: ' + course.id;
+                    ul.appendChild(idLi);
+
+                    const studentIdLi = document.createElement('li');
+                    studentIdLi.textContent = 'Student id: ' + course.student_id;
+                    ul.appendChild(studentIdLi);
+
+                    const dateLi = document.createElement('li');
+                    const unixTime = course.registeredDate;
+                    const date = new Date(unixTime);
+                    const year = date.getFullYear();
+                    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+                    const day = ('0' + date.getDate()).slice(-2);
+                    dateLi.textContent = 'Registration date: ' + `${year}/${month}/${day}`;
+                    ul.appendChild(dateLi);
+
+                    const cancelledLi = document.createElement('li');
+                    cancelledLi.textContent = 'Cancelled: ' + course.cancelled;
+                    ul.appendChild(cancelledLi);
+
+                    const courseNameLi = document.createElement('li');
+                    courseNameLi.textContent = 'Course Name: ' + course.course_name;
+                    ul.appendChild(courseNameLi);
+                    ul.appendChild(document.createElement('br'))
+
+                    li.appendChild(ul);
+                    registeredCoursesList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching registered courses:', error)
+            });
+    </script>
 </body>
 </html>

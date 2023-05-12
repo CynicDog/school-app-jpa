@@ -18,8 +18,8 @@ public class Student extends Person {
     }
 
     // for storing
-    public Student(String id, String password, String name, String phone, String email) {
-        super(id, password, name, phone, email);
+    public Student(String id, String password, String name, String phone, String email, String type) {
+        super(id, password, name, phone, email, type);
         this.deleted = "N";
     }
 

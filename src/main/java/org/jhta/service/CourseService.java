@@ -170,7 +170,7 @@ public class CourseService {
             if (course.getRegCount() >= course.getQuota()) { throw new RuntimeException("Quota already filled up."); }
 
             course.setRegCount(course.getRegCount() + 1);
-            if (course.getRegCount() == course.getQuota()) { course.setStatus("모집완료");}
+            if (course.getRegCount() == course.getQuota()) { course.setStatus("reached");}
 
             em.merge(course);
 
@@ -223,7 +223,7 @@ public class CourseService {
         }
     }
 
-    public List<RegisteredCourse> lookUpRegisteredCoursesById(String student_id) {
+    public List<RegisteredCourse> lookUpRegisteredCoursesByStudentId(String student_id) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 

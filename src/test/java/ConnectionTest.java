@@ -21,12 +21,12 @@ public class ConnectionTest {
 
         em.getTransaction().begin();
 
-        Student student1 = new Student("simon_test", "simon1", "Simon", "999-999-9999", "simon1@school.com");
-        Student student2 = new Student("alex_test", "alex1", "Alex", "999-999-9999", "alex1@school.com");
+        Student student1 = new Student("simon_test", "simon1", "Simon", "999-999-9999", "simon1@school.com", "student");
+        Student student2 = new Student("alex_test", "alex1", "Alex", "999-999-9999", "alex1@school.com", "student");
         em.persist(student1);
         em.persist(student2);
 
-        Teacher teacher1 = new Teacher("maria_test", "maria1", "Maria", "999-999-9999", "maria1@school.com", 999);
+        Teacher teacher1 = new Teacher("maria_test", "maria1", "Maria", "999-999-9999", "maria1@school.com", 999, "teacher");
         em.persist(teacher1);
 
         Course course1 = new Course("Algorithm 101", 10, teacher1);
@@ -75,10 +75,10 @@ public class ConnectionTest {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
 
-        Student student = new Student("john", "john1", "John Doe", "999-999-9999", "john1@school.com");
+        Student student = new Student("john", "john1", "John Doe", "999-999-9999", "john1@school.com", "student");
         em.persist(student);
 
-        Teacher teacher = new Teacher("jane", "jane1", "Jane Doe", "999-999-9999", "jane1@school.com", 999);
+        Teacher teacher = new Teacher("jane", "jane1", "Jane Doe", "999-999-9999", "jane1@school.com", 999, "teacher");
         em.persist(teacher);
 
         Course course = new Course("Database", 10, teacher);
@@ -101,10 +101,10 @@ public class ConnectionTest {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
 
-        Student student = new Student("paloma", "paloma1", "Paloma", "999-999-9999", "paloma1@school.com");
+        Student student = new Student("paloma", "paloma1", "Paloma", "999-999-9999", "paloma1@school.com", "student");
         em.persist(student);
 
-        Teacher teacher = new Teacher("fred", "fred1", "Fred", "999-999-9999", "fred1@school.com", 999);
+        Teacher teacher = new Teacher("fred", "fred1", "Fred", "999-999-9999", "fred1@school.com", 999, "teacher");
         em.persist(teacher);
 
         Course course = new Course("Portuguese", 1, teacher);

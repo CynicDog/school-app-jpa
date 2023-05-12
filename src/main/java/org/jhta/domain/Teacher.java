@@ -22,8 +22,8 @@ public class Teacher extends Person {
     }
 
     // for storing
-    public Teacher(String id, String password, String name, String phone, String email, int salary) {
-        super(id, password, name, phone, email);
+    public Teacher(String id, String password, String name, String phone, String email, int salary, String type) {
+        super(id, password, name, phone, email, type);
         this.retired = "N";
         this.salary = salary;
     }

@@ -37,9 +37,19 @@
             jsonObject[key] = value;
         }
 
+        jsonObject['type'] = "teacher";
+
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/register/teacher');
         xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 201) {
+                // generates an additional GET request according to the given direction location
+                window.location.href = xhr.getResponseHeader("Location");
+            } else {
+                alert('Error: ' + xhr.statusText);
+            }
+        };
         xhr.send(JSON.stringify(jsonObject));
     }
 </script>
