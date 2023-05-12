@@ -1,10 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>School App</title>
 </head>
 <body>
-Dashboard for Teacher
+    <h1>Teacher Dashboard</h1>
+    <p>Welcome, <span id="user-name"></span>!</p><br>
+    <h2>Opened Courses</h2>
+    <ul id="opened-courses"></ul>
+
+    <br>
+    <h2>Open Up a Course</h2>
+    <form>
+        <div>
+            <label for="course-name">Course Name: </label>
+            <input type="text" id="course-name" name="course-name">
+        </div>
+        <div>
+            <label for="course-quota">Course Quota: </label>
+            <input type="number" id="course-quota" name="course-quota">
+        </div>
+        <button onclick="openUpCourse()">Open Up</button>
+    </form>
+    <br>
+
+    <h2>Registered Students</h2>
+    <ul id="registered-students"></ul>
+
+    <script>
+        fetch('/login-user')
+            .then(response => response.json())
+            .then(user => {
+                document.getElementById('user-name').textContent = user.name;
+            })
+            .catch(error => {
+                console.error('Error fetching login user:', error);
+            });
+
+        fetch('/opened-up-courses')
+            .then(response => response.json())
+            .then(courses => {
+                const openedUpCoursesList = document.getElementById("opened-courses");
+                courses.forEach(course => {
+                    const li = document.createElement('li');
+
+                    const ul = document.createElement('ul');
+                    const idLi = document.createElement('li');
+                    idLi.textContent = 'ID: ' + course.id;
+                    ul.appendChild(idLi);
+
+                    const nameLi = document.createElement('li');
+                    nameLi.textContent = 'Name: ' + course.name;
+                    ul.appendChild(nameLi);
+
+                    const quotaLi = document.createElement('li');
+                    quotaLi.textContent = 'Quota: ' + course.quota;
+                    ul.appendChild(quotaLi);
+
+                    const regCountLi = document.createElement('li');
+                    regCountLi.textContent = 'Registration Count: ' + course.regCount;
+                    ul.appendChild(regCountLi);
+
+                    const statusLi = document.createElement('li');
+                    statusLi.textContent = 'Status: ' + course.status;
+                    ul.appendChild(statusLi);
+                    ul.appendChild(document.createElement('br'))
+
+                    li.appendChild(ul);
+                    openedUpCoursesList.appendChild(li);
+                })
+            })
+
+        function openUpCourse() {
+            var courseName = document.getElementById('course-name').value;
+            var courseQuota = parseInt(document.getElementById('course-quota').value);
+            fetch('/open-up', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'course-name': courseName,
+                    'course-quota': courseQuota
+                })
+            })
+                .then(response => {
+                    if(!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                })
+        }
+
+        fetch('/registered-students')
+            .then(response => response.json())
+            .then(courses => {
+                const registeredStudentsList = document.getElementById('registered-students');
+                const studentsMap = new Map();
+
+                courses.forEach(course => {
+                    if (studentsMap.has(course.student_id)) {
+                        studentsMap.get(course.student_id).push(course);
+                    } else {
+                        studentsMap.set(course.student_id, [course]);
+                    }
+                });
+
+                studentsMap.forEach((courses, studentId) => {
+                    const li = document.createElement('li');
+
+                    const ul = document.createElement('ul');
+
+                    const studentIdLi = document.createElement('li');
+                    const studentIdText = document.createTextNode(`Student Id: `);
+                    const studentIdSpan = document.createElement('span');
+                    studentIdSpan.style.fontWeight = 'bold';
+                    studentIdSpan.textContent = studentId;
+                    studentIdLi.appendChild(studentIdText);
+                    studentIdLi.appendChild(studentIdSpan);
+                    ul.appendChild(studentIdLi);
+
+                    const courseNameLi = document.createElement('li');
+                    const courseNames = courses.map(course => `${course.course_name} (${course.course_status})`).join(', ');
+                    courseNameLi.textContent = 'Course Name(s): ' + courseNames;
+                    ul.appendChild(courseNameLi);
+
+                    ul.appendChild(document.createElement('br'));
+
+                    li.appendChild(ul);
+                    registeredStudentsList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching registered students:', error)
+            });
+
+    </script>
 </body>
 </html>

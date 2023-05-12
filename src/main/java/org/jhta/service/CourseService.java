@@ -46,7 +46,7 @@ public class CourseService {
         }
     }
 
-    public List<Course> lookUpCoursesById(String teacher_id) {
+    public List<Course> lookUpCoursesByTeacherId(String teacher_id) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
@@ -115,7 +115,7 @@ public class CourseService {
         }
     }
 
-    public List<Course> lookUpCourses(String status) {
+    public List<Course> lookUpCoursesByStatus(String status) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
@@ -191,7 +191,7 @@ public class CourseService {
         }
     }
 
-    public List<RegisteredStudent> lookUpRegisteredStudentsById(String teacher_id) {
+    public List<RegisteredStudent> lookUpRegisteredStudentsByTeacherId(String teacher_id) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
