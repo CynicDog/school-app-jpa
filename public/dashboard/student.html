@@ -15,7 +15,6 @@
     <label for="courseId">Course Id: </label>
     <input type="number" id="courseId" name="courseId">
     <button type="button" onclick="applyForCourse()">Apply</button>
-    <div id="result"></div>
     <br>
 
     <h2>Registered Courses</h2>
@@ -32,7 +31,7 @@
             });
 
         // send a GET request to get the list of available courses and update the UI
-        fetch('/courses')
+        fetch('/available-courses')
             .then(response => response.json())
             .then(courses => {
                 const availableCoursesList = document.getElementById('available-courses');
@@ -102,11 +101,11 @@
 
                     const ul = document.createElement('ul');
                     const idLi = document.createElement('li');
-                    idLi.textContent = 'Registration id: ' + course.id;
+                    idLi.textContent = 'Registration Id: ' + course.id;
                     ul.appendChild(idLi);
 
                     const studentIdLi = document.createElement('li');
-                    studentIdLi.textContent = 'Student id: ' + course.student_id;
+                    studentIdLi.textContent = 'Student Id: ' + course.student_id;
                     ul.appendChild(studentIdLi);
 
                     const dateLi = document.createElement('li');
@@ -115,7 +114,7 @@
                     const year = date.getFullYear();
                     const month = ('0' + (date.getMonth() + 1)).slice(-2);
                     const day = ('0' + date.getDate()).slice(-2);
-                    dateLi.textContent = 'Registration date: ' + `${year}/${month}/${day}`;
+                    dateLi.textContent = 'Registration Date: ' + `${year}/${month}/${day}`;
                     ul.appendChild(dateLi);
 
                     const cancelledLi = document.createElement('li');
