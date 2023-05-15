@@ -26,7 +26,7 @@ public class CourseController {
     private final CourseService courseService;
     private final UserService userService;
     private final Gson gson;
-    private LoginUser loginUser;
+//    private LoginUser loginUser;
 
     public CourseController(Vertx vertx) {
 
@@ -36,11 +36,11 @@ public class CourseController {
 
         gson = new Gson();
 
-        EventBus eventBus = vertx.eventBus();
-        eventBus.consumer("loginUser", message -> {
-            LoginUser found = (LoginUser) message.body();
-            this.loginUser = found;
-        });
+//        EventBus eventBus = vertx.eventBus();
+//        eventBus.consumer("loginUser", message -> {
+//            LoginUser found = (LoginUser) message.body();
+//            this.loginUser = found;
+//        });
     }
 
     public void registerRoutes(Vertx vertx, Router router) {
@@ -95,11 +95,13 @@ public class CourseController {
 
     private void handleOpenUp(RoutingContext routingContext) {
 
+        LoginUser sessionUser = routingContext.session().get("loginUser");
+
         JsonObject openUpData = routingContext.getBodyAsJson();
 
         String courseName = openUpData.getString("course-name");
         int courseQuota = openUpData.getInteger("course-quota");
-        Teacher teacher = userService.getTeacherById(this.loginUser.getId());
+        Teacher teacher = userService.getTeacherById(sessionUser.getId());
 
         Course course = new Course(courseName, courseQuota, teacher);
 
@@ -110,7 +112,9 @@ public class CourseController {
 
     private void handleOpenedUpCourses(RoutingContext routingContext) {
 
-        List<Course> courses = courseService.getCoursesByTeacherId(this.loginUser.getId());
+        LoginUser sessionUser = routingContext.session().get("loginUser");
+
+        List<Course> courses = courseService.getCoursesByTeacherId(sessionUser.getId());
 
         JsonArray jsonArray = new JsonArray();
         for (Course course : courses) {
@@ -131,11 +135,13 @@ public class CourseController {
 
     private void handleRegisteredStudents(RoutingContext routingContext) {
 
-        List<RegisteredStudent> registeredStudents = courseService.getRegisteredStudentsByTeacherId(this.loginUser.getId());
+        LoginUser sessionUser = routingContext.session().get("loginUser");
+
+        List<RegisteredStudent> registeredStudents = courseService.getRegisteredStudentsByTeacherId(sessionUser.getId());
 
         JsonArray jsonArray = new JsonArray();
         for (RegisteredStudent registeredStudent : registeredStudents) {
-            if (registeredStudent !=null) {
+            if (registeredStudent != null) {
                 JsonObject jsonObject = new JsonObject()
                         .put("course_name", registeredStudent.getCourse_name())
                         .put("course_status", registeredStudent.getCourse_status())
@@ -152,7 +158,9 @@ public class CourseController {
 
     private void handleRegisteredCourses(RoutingContext routingContext) {
 
-        List<RegisteredCourse> registeredCourses = courseService.getRegisteredCoursesByStudentId(this.loginUser.getId());
+        LoginUser sessionUser = routingContext.session().get("loginUser");
+
+        List<RegisteredCourse> registeredCourses = courseService.getRegisteredCoursesByStudentId(sessionUser.getId());
 
         JsonArray jsonArray = new JsonArray();
         for (RegisteredCourse registeredCourse : registeredCourses) {
@@ -175,11 +183,13 @@ public class CourseController {
 
     private void handleApply(RoutingContext routingContext) {
 
+        LoginUser sessionUser = routingContext.session().get("loginUser");
+
         JsonObject applyData = routingContext.getBodyAsJson();
 
         Long courseId = applyData.getInteger("courseId").longValue();
         Course course = courseService.getCourseById(courseId);
-        Student student = userService.getStudentById(this.loginUser.getId());
+        Student student = userService.getStudentById(sessionUser.getId());
 
         Registration registration = new Registration(student, course);
 

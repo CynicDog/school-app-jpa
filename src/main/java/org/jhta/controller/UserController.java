@@ -9,7 +9,9 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.ext.web.sstore.LocalSessionStore;
 import org.jhta.domain.LoginUser;
 import org.jhta.domain.Person;
 import org.jhta.domain.Student;
@@ -23,7 +25,7 @@ public class UserController {
     private final UserService userService;
     private final Gson gson;
     private LoginUser loginUser;
-    public LoginUser getLoginUser() { return loginUser; }
+//    public LoginUser getLoginUser() { return loginUser; }
 
     public UserController() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("school-app-jpa");
@@ -33,6 +35,7 @@ public class UserController {
 
     public void registerRoutes(Vertx vertx, Router router) {
 
+        router.route().handler(SessionHandler.create(LocalSessionStore.create(vertx)));
         router.route().handler(StaticHandler.create());
 
         router.route(HttpMethod.GET, "/page/register/student").handler(routingContext -> {
@@ -75,8 +78,10 @@ public class UserController {
     }
 
     private void handleLoginUser(RoutingContext routingContext) {
-        JsonObject json = new JsonObject()
-                .put("name", loginUser.getName());
+
+        LoginUser sessionUser = routingContext.session().get("loginUser");
+
+        JsonObject json = new JsonObject().put("name", sessionUser.getName());
 
         routingContext.response()
                 .putHeader("Content-Type", "application/json")
@@ -94,15 +99,16 @@ public class UserController {
 
         this.loginUser = new LoginUser(found.getId(), found.getName(), found.getEmail(), found.getType());
 
-        routingContext.vertx().getOrCreateContext().put("loginUser", this.loginUser);
+//        EventBus eventBus = routingContext.vertx().eventBus();
+//        eventBus.publish("loginUser", this.loginUser);
 
-        EventBus eventBus = routingContext.vertx().eventBus();
-        eventBus.publish("loginUser", this.loginUser);
+        routingContext.session().put("loginUser", this.loginUser);
+        LoginUser sessionUser = routingContext.session().get("loginUser");
 
-        if ("student".equals(loginUser.getType())) {
+        if ("student".equals(sessionUser.getType())) {
             System.out.println("Directing to dashboard for student..");
             routingContext.response().setStatusCode(201).putHeader("Location", "/page/dashboard/student").end();
-        } else if ("teacher".equals(loginUser.getType())) {
+        } else if ("teacher".equals(sessionUser.getType())) {
             System.out.println("Directing to dashboard for teacher..");
             routingContext.response().setStatusCode(201).putHeader("Location", "/page/dashboard/teacher").end();
         }
