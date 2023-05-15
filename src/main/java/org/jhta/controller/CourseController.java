@@ -16,8 +16,6 @@ import org.jhta.service.UserService;
 import org.jhta.subselect.RegisteredCourse;
 import org.jhta.subselect.RegisteredStudent;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.Date;
 import java.util.List;
 
@@ -28,11 +26,9 @@ public class CourseController {
     private final Gson gson;
 //    private LoginUser loginUser;
 
-    public CourseController(Vertx vertx) {
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("school-app-jpa");
-        courseService = new CourseService(emf);
-        userService = new UserService(emf);
+    public CourseController(Vertx vertx, CourseService courseService, UserService userService) {
+        this.courseService = courseService;
+        this.userService = userService;
 
         gson = new Gson();
 

@@ -18,18 +18,14 @@ import org.jhta.domain.Student;
 import org.jhta.domain.Teacher;
 import org.jhta.service.UserService;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 public class UserController {
     private final UserService userService;
     private final Gson gson;
     private LoginUser loginUser;
 //    public LoginUser getLoginUser() { return loginUser; }
 
-    public UserController() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("school-app-jpa");
-        userService = new UserService(emf);
+    public UserController(UserService userService) {
+        this.userService = userService;
         gson = new Gson();
     }
 
