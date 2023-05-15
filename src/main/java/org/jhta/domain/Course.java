@@ -102,6 +102,8 @@ public class Course {
         this.registrations.add(registration);
     }
 
+    public void removeRegistration(Registration registration) { this.registrations.remove(registration); }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

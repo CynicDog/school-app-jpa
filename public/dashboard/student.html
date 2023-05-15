@@ -20,6 +20,11 @@
     <h2>Registered Courses</h2>
     <ul id="registered-courses"></ul>
 
+    <h2>Abort Registration</h2>
+    <label for="registrationId">Registration Id: </label>
+    <input type="number" id="registrationId" name="registrationId">
+    <button type="button" onclick="abortRegistration()">Apply</button>
+
     <script>
         fetch('/login-user')
             .then(response => response.json())
@@ -133,6 +138,28 @@
             .catch(error => {
                 console.error('Error fetching registered courses:', error)
             });
+
+        function abortRegistration() {
+            var registrationId = parseInt(document.getElementById('registrationId').value);
+            fetch('/abort-registration', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    registrationId: registrationId
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
     </script>
 </body>
 </html>

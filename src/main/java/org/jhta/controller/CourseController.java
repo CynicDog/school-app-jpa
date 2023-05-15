@@ -56,9 +56,41 @@ public class CourseController {
                 .handler(BodyHandler.create())
                 .handler(this::handleApply);
 
+        router.route(HttpMethod.POST, "/abort-registration")
+                .handler(BodyHandler.create())
+                .handler(this::handleAbort);
+
         router.route(HttpMethod.POST, "/open-up")
                 .handler(BodyHandler.create())
                 .handler(this::handleOpenUp);
+
+        router.route(HttpMethod.POST, "/close-course")
+                .handler(BodyHandler.create())
+                .handler(this::handleClose);
+    }
+
+    private void handleClose(RoutingContext routingContext) {
+
+        JsonObject closeData = routingContext.getBodyAsJson();
+
+        Long courseId = closeData.getInteger("courseId").longValue();
+
+        Course course = courseService.getCourseById(courseId);
+        courseService.deleteCourse(course);
+
+        routingContext.response().setStatusCode(201).end();
+    }
+
+    private void handleAbort(RoutingContext routingContext) {
+
+        JsonObject abortData = routingContext.getBodyAsJson();
+
+        Long registrationId = abortData.getInteger("registrationId").longValue();
+
+        Registration registration = courseService.getRegistrationById(registrationId);
+        courseService.deleteRegistration(registration);
+
+        routingContext.response().setStatusCode(201).end();
     }
 
     private void handleOpenUp(RoutingContext routingContext) {
@@ -78,7 +110,7 @@ public class CourseController {
 
     private void handleOpenedUpCourses(RoutingContext routingContext) {
 
-        List<Course> courses = courseService.lookUpCoursesByTeacherId(this.loginUser.getId());
+        List<Course> courses = courseService.getCoursesByTeacherId(this.loginUser.getId());
 
         JsonArray jsonArray = new JsonArray();
         for (Course course : courses) {
@@ -99,7 +131,7 @@ public class CourseController {
 
     private void handleRegisteredStudents(RoutingContext routingContext) {
 
-        List<RegisteredStudent> registeredStudents = courseService.lookUpRegisteredStudentsByTeacherId(this.loginUser.getId());
+        List<RegisteredStudent> registeredStudents = courseService.getRegisteredStudentsByTeacherId(this.loginUser.getId());
 
         JsonArray jsonArray = new JsonArray();
         for (RegisteredStudent registeredStudent : registeredStudents) {
@@ -120,7 +152,7 @@ public class CourseController {
 
     private void handleRegisteredCourses(RoutingContext routingContext) {
 
-        List<RegisteredCourse> registeredCourses = courseService.lookUpRegisteredCoursesByStudentId(this.loginUser.getId());
+        List<RegisteredCourse> registeredCourses = courseService.getRegisteredCoursesByStudentId(this.loginUser.getId());
 
         JsonArray jsonArray = new JsonArray();
         for (RegisteredCourse registeredCourse : registeredCourses) {
@@ -145,7 +177,7 @@ public class CourseController {
 
         JsonObject applyData = routingContext.getBodyAsJson();
 
-        Long courseId = (Long) applyData.getInteger("courseId").longValue();
+        Long courseId = applyData.getInteger("courseId").longValue();
         Course course = courseService.getCourseById(courseId);
         Student student = userService.getStudentById(this.loginUser.getId());
 
@@ -158,7 +190,7 @@ public class CourseController {
 
     private void handleAvailableCourses(RoutingContext routingContext) {
 
-        List<Course> courses = courseService.lookUpCoursesByStatus("available");
+        List<Course> courses = courseService.getCoursesByStatus("available");
 
         JsonArray jsonArray = new JsonArray();
         for (Course course : courses) {

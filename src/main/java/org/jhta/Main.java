@@ -98,7 +98,7 @@ public class Main {
     private void teacher과정현황조회() {
         System.out.println("[ Course Registration Status Page ]");
 
-        courseService.lookUpRegisteredStudentsByTeacherId(this.loginUser.getId())
+        courseService.getRegisteredStudentsByTeacherId(this.loginUser.getId())
                 .stream()
                 .map(RegisteredStudent::toString)
                 .forEach(System.out::println);
@@ -125,7 +125,7 @@ public class Main {
     private void teacher과정조회() {
         System.out.println("[ Course List Page ]\n");
 
-        courseService.lookUpCoursesByTeacherId(loginUser.getId())
+        courseService.getCoursesByTeacherId(loginUser.getId())
                 .stream()
                 .map(Course::toString)
                 .forEach(System.out::println);
@@ -134,7 +134,7 @@ public class Main {
     private void student신청현황조회() {
         System.out.println("[ Course Registration History Page ]");
 
-        courseService.lookUpRegisteredCoursesByStudentId(this.loginUser.getId())
+        courseService.getRegisteredCoursesByStudentId(this.loginUser.getId())
                 .stream()
                 .map(RegisteredCourse::toString)
                 .forEach(System.out::println);
@@ -162,7 +162,7 @@ public class Main {
     private void student과정조회() {
         System.out.println("[ Available Courses Page ]");
 
-        courseService.lookUpCoursesByStatus("available")
+        courseService.getCoursesByStatus("available")
                 .stream()
                 .map(Course::toString)
                 .forEach(System.out::println);

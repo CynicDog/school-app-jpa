@@ -18,7 +18,154 @@ public class CourseService {
         this.emf = emf;
     }
 
+    public void deleteCourse(Course course) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = null;
+
+        boolean succeeded = false;
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+
+            List<Registration> registrations = this.getRegistrationsByCourseId(course.getId());
+
+            registrations.forEach(registration -> {
+
+                course.removeRegistration(registration);
+            });
+
+            em.createQuery("delete from Registration r where r.course.id = :courseId")
+                    .setParameter("courseId", course.getId())
+                    .executeUpdate();
+
+            em.createQuery("delete from Course c where c.id = :courseId")
+                    .setParameter("courseId", course.getId())
+                    .executeUpdate();
+
+            succeeded = true;
+
+        } catch (RuntimeException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+
+            if (succeeded) {
+                transaction.commit();
+            } else {
+                assert transaction != null;
+                transaction.rollback();
+            }
+            em.close();
+        }
+    }
+
+    public void deleteRegistration(Registration registration) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = null;
+
+        boolean succeeded = false;
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+
+            Course course = registration.getCourse();
+            course.removeRegistration(registration);
+
+            if ("reached".equals(course.getStatus())) {
+                course.setStatus("available");
+            }
+            course.setRegCount(course.getRegCount() - 1);
+
+            em.merge(course);
+
+            em.createQuery("delete from Registration r where r.id = :registrationId")
+                    .setParameter("registrationId", registration.getId())
+                    .executeUpdate();
+
+            succeeded = true;
+
+        } catch (RuntimeException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+
+            if (succeeded) {
+                transaction.commit();
+            } else {
+                assert transaction != null;
+                transaction.rollback();
+            }
+
+            em.close();
+        }
+    }
+
+    public List<Registration> getRegistrationsByCourseId(Long courseId) {
+
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = null;
+
+        List<Registration> registrations = new ArrayList<>();
+
+        boolean succeeded = false;
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+
+            registrations = em.createQuery( "select r from Registration r where r.course.id = :courseId", Registration.class)
+                    .setParameter("courseId", courseId)
+                    .getResultList();
+
+            succeeded = true;
+
+            return registrations;
+
+        } catch (RuntimeException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+
+            if (succeeded) {
+                transaction.commit();
+            } else {
+                assert transaction != null;
+                transaction.rollback();
+            }
+
+            em.close();
+        }
+
+    }
+
+    public Registration getRegistrationById(Long registrationId) {
+
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = null;
+
+        boolean succeeded = false;
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+
+            Registration registration = em.find(Registration.class, registrationId);
+            succeeded = true;
+
+            return registration;
+
+        } catch (RuntimeException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+
+            if (succeeded) {
+                transaction.commit();
+            } else {
+                assert transaction != null;
+                transaction.rollback();
+            }
+
+            em.close();
+        }
+    }
+
     public void openUpCourse(Course course) {
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
@@ -46,7 +193,8 @@ public class CourseService {
         }
     }
 
-    public List<Course> lookUpCoursesByTeacherId(String teacher_id) {
+    public List<Course> getCoursesByTeacherId(String teacher_id) {
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
@@ -57,7 +205,7 @@ public class CourseService {
             transaction = em.getTransaction();
             transaction.begin();
 
-            courses= em
+            courses = em
                     .createQuery("select c from Course c where c.teacher.id = :teacherId", Course.class)
                     .setParameter("teacherId", teacher_id)
                     .getResultList();
@@ -82,6 +230,7 @@ public class CourseService {
     }
 
     public Course getCourseById(Long courseId) {
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
@@ -115,7 +264,8 @@ public class CourseService {
         }
     }
 
-    public List<Course> lookUpCoursesByStatus(String status) {
+    public List<Course> getCoursesByStatus(String status) {
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
@@ -154,6 +304,7 @@ public class CourseService {
     }
 
     public void applyCourse(Registration registration) {
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
@@ -191,7 +342,8 @@ public class CourseService {
         }
     }
 
-    public List<RegisteredStudent> lookUpRegisteredStudentsByTeacherId(String teacher_id) {
+    public List<RegisteredStudent> getRegisteredStudentsByTeacherId(String teacher_id) {
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
@@ -223,7 +375,8 @@ public class CourseService {
         }
     }
 
-    public List<RegisteredCourse> lookUpRegisteredCoursesByStudentId(String student_id) {
+    public List<RegisteredCourse> getRegisteredCoursesByStudentId(String student_id) {
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 

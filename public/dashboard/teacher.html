@@ -28,6 +28,11 @@
     <h2>Registered Students</h2>
     <ul id="registered-students"></ul>
 
+    <h2>Close Down a Course</h2>
+    <label for="courseId">Course Id: </label>
+    <input type="number" id="courseId" name="courseId">
+    <button type="button" onclick="closeDownCourse()">Apply</button>
+
     <script>
         fetch('/login-user')
             .then(response => response.json())
@@ -138,6 +143,28 @@
             .catch(error => {
                 console.error('Error fetching registered students:', error)
             });
+
+        function closeDownCourse() {
+            var courseId = parseInt(document.getElementById('courseId').value);
+            fetch('/close-course', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    courseId: courseId
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
 
     </script>
 </body>
