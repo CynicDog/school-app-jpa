@@ -30,7 +30,7 @@ public class ServerDriver extends AbstractVerticle {
         UserController userController = new UserController(userService);
         userController.registerRoutes(vertx, router);
 
-        CourseController courseController = new CourseController(vertx, courseService, userService);
+        CourseController courseController = new CourseController(courseService, userService);
         courseController.registerRoutes(vertx, router);
 
         server.requestHandler(router).listen(8080, result -> {

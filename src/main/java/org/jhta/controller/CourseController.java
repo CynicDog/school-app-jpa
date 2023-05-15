@@ -26,7 +26,7 @@ public class CourseController {
     private final Gson gson;
 //    private LoginUser loginUser;
 
-    public CourseController(Vertx vertx, CourseService courseService, UserService userService) {
+    public CourseController(CourseService courseService, UserService userService) {
         this.courseService = courseService;
         this.userService = userService;
 
