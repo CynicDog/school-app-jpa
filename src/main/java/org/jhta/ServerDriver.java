@@ -38,6 +38,6 @@ public class ServerDriver extends AbstractVerticle {
 
         Vertx vertx = Vertx.vertx();
         vertx.deployVerticle(new ServerDriver());
-        vertx.eventBus().registerDefaultCodec(LoginUser.class, new LoginUserCodec());
+//        vertx.eventBus().registerDefaultCodec(LoginUser.class, new LoginUserCodec());
     }
 }
