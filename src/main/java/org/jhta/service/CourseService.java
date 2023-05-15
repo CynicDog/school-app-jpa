@@ -22,7 +22,6 @@ public class CourseService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -42,18 +41,15 @@ public class CourseService {
                     .setParameter("courseId", course.getId())
                     .executeUpdate();
 
-            succeeded = true;
+            transaction.commit();
 
         } catch (RuntimeException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-
-            if (succeeded) {
-                transaction.commit();
-            } else {
-                assert transaction != null;
+            if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
+            throw new RuntimeException(ex);
+
+        } finally {
             em.close();
         }
     }
@@ -62,7 +58,6 @@ public class CourseService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -81,19 +76,15 @@ public class CourseService {
                     .setParameter("registrationId", registration.getId())
                     .executeUpdate();
 
-            succeeded = true;
+            transaction.commit();
 
         } catch (RuntimeException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-
-            if (succeeded) {
-                transaction.commit();
-            } else {
-                assert transaction != null;
+            if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
+            throw new RuntimeException(ex);
 
+        } finally {
             em.close();
         }
     }
@@ -105,7 +96,6 @@ public class CourseService {
 
         List<Registration> registrations = new ArrayList<>();
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -114,21 +104,16 @@ public class CourseService {
                     .setParameter("courseId", courseId)
                     .getResultList();
 
-            succeeded = true;
-
+            transaction.commit();
             return registrations;
 
         } catch (RuntimeException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-
-            if (succeeded) {
-                transaction.commit();
-            } else {
-                assert transaction != null;
-                transaction.rollback();
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();;
             }
+            throw new RuntimeException(ex);
 
+        } finally {
             em.close();
         }
 
@@ -139,27 +124,23 @@ public class CourseService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
 
             Registration registration = em.find(Registration.class, registrationId);
-            succeeded = true;
+
+            transaction.commit();
 
             return registration;
 
         } catch (RuntimeException ex) {
-            throw new RuntimeException(ex);
-        } finally {
-
-            if (succeeded) {
-                transaction.commit();
-            } else {
-                assert transaction != null;
+            if(transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
+            throw new RuntimeException(ex);
 
+        } finally {
             em.close();
         }
     }
@@ -169,26 +150,21 @@ public class CourseService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
 
             em.persist(course);
-            succeeded = true;
+
+            transaction.commit();
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -200,7 +176,6 @@ public class CourseService {
 
         List<Course> courses = new ArrayList<>();
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -210,21 +185,16 @@ public class CourseService {
                     .setParameter("teacherId", teacher_id)
                     .getResultList();
 
-            succeeded = true;
+            transaction.commit();
             return courses;
 
         } catch (RuntimeException ex) {
+            if(transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -236,30 +206,23 @@ public class CourseService {
 
         Course course = null;
 
-        boolean succeeded = false;
-
         try {
             transaction = em.getTransaction();
             transaction.begin();
 
             course = em.find(Course.class, courseId);
 
-            succeeded = true;
+            transaction.commit();
+
             return course;
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -271,8 +234,6 @@ public class CourseService {
 
         List<Course> courses = new ArrayList<>();
 
-        boolean succeeded = false;
-
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -282,23 +243,16 @@ public class CourseService {
                     .setParameter("status", status)
                     .getResultList();
 
-            succeeded = true;
-
+            transaction.commit();
             return courses;
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -308,14 +262,11 @@ public class CourseService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
 
             em.persist(registration);
-
-            succeeded = true;
 
             Course course = registration.getCourse();
             if (course.getRegCount() >= course.getQuota()) { throw new RuntimeException("Quota already filled up."); }
@@ -324,20 +275,15 @@ public class CourseService {
             if (course.getRegCount() == course.getQuota()) { course.setStatus("reached");}
 
             em.merge(course);
+            transaction.commit();
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -349,7 +295,6 @@ public class CourseService {
 
         List<RegisteredStudent> students = new ArrayList<>();
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -358,19 +303,16 @@ public class CourseService {
                     .setParameter("teacherId", teacher_id)
                     .getResultList();
 
+            transaction.commit();
             return students;
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-            if (succeeded) {
-                transaction.commit();
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -381,7 +323,7 @@ public class CourseService {
         EntityTransaction transaction = null;
 
         List<RegisteredCourse> courses = new ArrayList<>();
-        boolean succeeded = false;
+
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -390,19 +332,16 @@ public class CourseService {
                     .setParameter("studentId", student_id)
                     .getResultList();
 
+            transaction.commit();
             return courses;
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-            if (succeeded) {
-                transaction.commit();
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }

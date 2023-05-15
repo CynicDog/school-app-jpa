@@ -18,26 +18,20 @@ public class UserService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
 
             em.persist(teacher);
-            succeeded = true;
+            transaction.commit();
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -46,26 +40,20 @@ public class UserService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = null;
 
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
 
             em.persist(student);
-            succeeded = true;
+            transaction.commit();
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -75,7 +63,7 @@ public class UserService {
         EntityTransaction transaction = null;
 
         Person found = null;
-        boolean succeeded = false;
+
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -88,22 +76,17 @@ public class UserService {
             if (!user_password.equals(found.getPassword())) {
                 throw new RuntimeException("Password doesn't match.");
             }
-            succeeded = true;
 
+            transaction.commit();
             return found;
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -113,7 +96,6 @@ public class UserService {
         EntityTransaction transaction = null;
 
         Teacher found = null;
-        boolean succeeded = false;
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -123,22 +105,17 @@ public class UserService {
             if (found == null) {
                 throw new RuntimeException("No user found with the given identifier.");
             }
-            succeeded = true;
 
+            transaction.commit();
             return found;
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
@@ -148,7 +125,7 @@ public class UserService {
         EntityTransaction transaction = null;
 
         Student found = null;
-        boolean succeeded = false;
+
         try {
             transaction = em.getTransaction();
             transaction.begin();
@@ -158,22 +135,17 @@ public class UserService {
             if (found == null) {
                 throw new RuntimeException("No user found with the given identifier.");
             }
-            succeeded = true;
 
+            transaction.commit();
             return found;
 
         } catch (RuntimeException ex) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             throw new RuntimeException(ex);
 
         } finally {
-            if (succeeded) {
-                transaction.commit();
-
-            } else {
-                assert transaction != null;
-                transaction.rollback();
-            }
-
             em.close();
         }
     }
