@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>School App</title>
+    <style type="text/css">
+        span {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: .6;
+        }
+        span:hover {
+             opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<h1>Welcome to School App</h1><br>
+<span onclick="loginRequest()">Login</span>
+<span onclick="studentRegistrationRequest()">Student Registration</span>
+<span onclick="teacherRegistrationRequest()">Teacher Registration</span>
+
+<script>
+    // directing to login page
+    function loginRequest() {
+        window.location.href = '/page/login';
+    }
+
+    // directing to student registration page
+    function studentRegistrationRequest() {
+        window.location.href = '/page/register/student';
+    }
+
+    // directing to teacher registration page
+    function teacherRegistrationRequest() {
+        window.location.href = '/page/register/teacher';
+    }
+</script>
+</body>
+</html>

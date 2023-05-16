@@ -49,7 +49,7 @@ public class UserController {
         router.route(HttpMethod.GET, "/page/login").handler(routingContext -> {
             routingContext.response()
                     .putHeader("Content-Type", "text/html")
-                    .sendFile("public/login/login.html");
+                    .sendFile("public/authentication/login.html");
         });
 
         router.route(HttpMethod.GET, "/page/dashboard/student").handler(routingContext -> {
@@ -64,6 +64,12 @@ public class UserController {
                     .sendFile("public/dashboard/teacher.html");
         });
 
+        router.route(HttpMethod.GET, "/home").handler(routingContext -> {
+            routingContext.response()
+                    .putHeader("Content-Type", "text/html")
+                    .sendFile("public/home/home.html");
+        });
+
         router.route(HttpMethod.GET, "/login-user").handler(this::handleLoginUser);
 
         router.route(HttpMethod.POST, "/register/student").handler(this::handleRegisterStudent);
@@ -71,6 +77,13 @@ public class UserController {
         router.route(HttpMethod.POST, "/login")
                 .handler(BodyHandler.create())
                 .handler(this::handleLogin);
+        router.route(HttpMethod.POST, "/logout").handler(this::handleLogOut);
+    }
+
+    private void handleLogOut(RoutingContext routingContext) {
+
+        routingContext.session().remove("loginUser");
+        routingContext.response().setStatusCode(200).end();
     }
 
     private void handleLoginUser(RoutingContext routingContext) {

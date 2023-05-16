@@ -3,6 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>School App</title>
+    <style type="text/css">
+        div {
+            display: block;
+            font-size: 16px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            opacity: .6;
+        }
+        div:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <h1>Teacher Dashboard</h1>
@@ -31,9 +43,24 @@
     <h2>Close Down a Course</h2>
     <label for="courseId">Course Id: </label>
     <input type="number" id="courseId" name="courseId">
-    <button type="button" onclick="closeDownCourse()">Apply</button>
+    <button type="button" onclick="closeDownCourse()">Apply</button><br>
+
+    <div onclick="logoutRequest()">Log out</div>
 
     <script>
+        function logoutRequest() {
+            fetch('/logout', { method: 'POST' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok')
+                    }
+                    window.location.href = '/home';
+                })
+                .catch(error => {
+                    console.log('Error logging out: ', error);
+                });
+        }
+
         fetch('/login-user')
             .then(response => response.json())
             .then(user => {

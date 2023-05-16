@@ -2,7 +2,19 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Student Dashboard</title>
+    <title>School App</title>
+    <style type="text/css">
+        div {
+            display: block;
+            font-size: 16px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            opacity: .6;
+        }
+        div:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <h1>Student Dashboard</h1>
@@ -23,9 +35,24 @@
     <h2>Abort Registration</h2>
     <label for="registrationId">Registration Id: </label>
     <input type="number" id="registrationId" name="registrationId">
-    <button type="button" onclick="abortRegistration()">Apply</button>
+    <button type="button" onclick="abortRegistration()">Apply</button><br>
+
+    <div onclick="logoutRequest()">Log out</div>
 
     <script>
+        function logoutRequest() {
+            fetch('/logout', { method: 'POST' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok')
+                    }
+                    window.location.href = '/home';
+                })
+                .catch(error => {
+                    console.log('Error logging out: ', error);
+                });
+        }
+
         fetch('/login-user')
             .then(response => response.json())
             .then(user => {
