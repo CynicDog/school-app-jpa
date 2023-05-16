@@ -119,11 +119,12 @@
             })
                 .then(response => {
                     if(!response.ok) {
-                        throw new Error('Network response was not ok');
+                        throw new Error('Already exists a course with the given course name.');
                     }
                     window.location.reload();
                 })
                 .catch(error => {
+                    alert(error);
                     console.error('There was a problem with the fetch operation:', error);
                 })
         }
@@ -184,11 +185,12 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        throw new Error('Course with given number does not exist.');
                     }
                     window.location.reload();
                 })
                 .catch(error => {
+                    alert(error);
                     console.error('There was a problem with the fetch operation:', error);
                 });
         }
