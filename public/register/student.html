@@ -8,46 +8,51 @@
 <h1>Student Registration Form</h1>
 <form id="register-form">
     <label for="id">ID:</label>
-    <input type="text" id="id" name="id"><br>
+    <input type="text" id="id" name="id" required><br>
 
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password"><br>
+    <input type="password" id="password" name="password" required><br>
 
     <label for="name">Name:</label>
-    <input type="text" id="name" name="name"><br>
+    <input type="text" id="name" name="name" required><br>
 
     <label for="phone">Phone:</label>
-    <input type="text" id="phone" name="phone"><br>
+    <input type="text" id="phone" name="phone" pattern="\d{3}-\d{3}-\d{4}" required><br>
 
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email"><br>
+    <input type="email" id="email" name="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required><br>
 
     <button type="button" onclick="registerStudent()">Register</button>
 </form>
 <script>
     function registerStudent() {
         var form = document.getElementById('register-form');
-        var formData = new FormData(form);
-        var jsonObject = {};
+        if (form.checkValidity()) {
 
-        for (const [key, value] of formData.entries()) {
-            jsonObject[key] = value;
-        }
+            var formData = new FormData(form);
+            var jsonObject = {};
 
-        jsonObject['type'] = "student";
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/register/student');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onload = function() {
-            if (xhr.status === 201) {
-                // generates an additional GET request according to the given direction location
-                window.location.href = xhr.getResponseHeader("Location");
-            } else {
-                alert('Error: ' + xhr.statusText);
+            for (const [key, value] of formData.entries()) {
+                jsonObject[key] = value;
             }
-        };
-        xhr.send(JSON.stringify(jsonObject));
+
+            jsonObject['type'] = "student";
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/register/student');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 201) {
+                    // generates an additional GET request according to the given direction location
+                    window.location.href = xhr.getResponseHeader("Location");
+                } else {
+                    alert('Error: ' + xhr.statusText);
+                }
+            };
+            xhr.send(JSON.stringify(jsonObject));
+        } else {
+            alert("Please fill in all the required fields correctly.");
+        }
     }
 </script>
 </body>
