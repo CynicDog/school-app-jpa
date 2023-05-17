@@ -114,7 +114,7 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Already applied for the course.');
+                        throw new Error('Already applied for the course or there is no course with the given course id.');
                     }
                     window.location.reload();
                 })
@@ -180,7 +180,7 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Registration with given number does not exist.');
+                        throw new Error('Registration with given id does not exist.');
                     }
                     window.location.reload();
                 })
