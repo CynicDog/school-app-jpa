@@ -32,7 +32,7 @@
                 // generates an additional GET request according to the given direction location
                 window.location.href = xhr.getResponseHeader("Location");
             } else {
-                alert('Error: ' + xhr.statusText);
+                alert("There was a problem during login process. Please check the login information again.");
             }
         };
         xhr.send(JSON.stringify({id: id, password: password}));
